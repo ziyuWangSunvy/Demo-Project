@@ -36,6 +36,8 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testOutputDirectory>src/test/java</testOutputDirectory>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
