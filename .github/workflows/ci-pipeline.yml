@@ -83,7 +83,7 @@ jobs:
           echo "smells=$SMELLS" >> $GITHUB_OUTPUT
           echo "qg_status=$QG" >> $GITHUB_OUTPUT
 
-      # 飞书卡片通知（合并构建状态 + SonarCloud 结果）
+      # 飞书卡片通知
       - name: Send Feishu Notification
         if: always()
         run: |
