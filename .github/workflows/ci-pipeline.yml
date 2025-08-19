@@ -1,0 +1,144 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 拉取完整 Git 历史
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2. 设置 JDK 21 并启用 Maven 缓存
+      - name: Setup JDK and Maven cache
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'liberica'
+          cache: maven
+
+      # 3. 缓存 SonarQube 包
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      # 4. 生成测试和 Jacoco 覆盖率报告
+      - name: Run tests and generate Jacoco report
+        run: mvn clean verify jacoco:report --file pom.xml
+
+      # 5. 上传 Jacoco 报告
+      - name: Upload Jacoco report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
+
+      # 6. 打包项目（可选，多模块也适用）
+      - name: Package project
+        run: mvn -B package --file pom.xml
+
+      # 7. SonarQube 分析
+      - name: SonarQube Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=ziyuWangSunvy_Demo-Project
+            # 获取 SonarCloud Metrics
+      # 8. 获取 SonarCloud Metrics
+      - name: Get SonarQube Metrics
+        id: sonar
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+          PROJECT_KEY="ziyuWangSunvy_Demo-Project"
+          TOKEN="${{ secrets.SONAR_TOKEN }}"
+
+          API="https://sonarcloud.io/api/measures/component?component=$PROJECT_KEY&metricKeys=coverage,bugs,vulnerabilities,code_smells"
+          RESPONSE=$(curl -s -u $TOKEN: "$API")
+          
+          COVERAGE=$(echo $RESPONSE | jq -r '.component.measures[] | select(.metric=="coverage") | .value')
+          BUGS=$(echo $RESPONSE | jq -r '.component.measures[] | select(.metric=="bugs") | .value')
+          VULNS=$(echo $RESPONSE | jq -r '.component.measures[] | select(.metric=="vulnerabilities") | .value')
+          SMELLS=$(echo $RESPONSE | jq -r '.component.measures[] | select(.metric=="code_smells") | .value')
+
+          QG=$(curl -s -u $TOKEN: "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$PROJECT_KEY" | jq -r '.projectStatus.status')
+
+          echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+          echo "bugs=$BUGS" >> $GITHUB_OUTPUT
+          echo "vulns=$VULNS" >> $GITHUB_OUTPUT
+          echo "smells=$SMELLS" >> $GITHUB_OUTPUT
+          echo "qg_status=$QG" >> $GITHUB_OUTPUT
+
+      # 飞书卡片通知（合并构建状态 + SonarCloud 结果）
+      - name: Send Feishu Notification
+        if: always()
+        run: |
+          PROJECT_KEY="ziyuWangSunvy_Demo-Project"
+          COVERAGE=${{ steps.sonar.outputs.coverage }}
+          BUGS=${{ steps.sonar.outputs.bugs }}
+          VULNS=${{ steps.sonar.outputs.vulns }}
+          SMELLS=${{ steps.sonar.outputs.smells }}
+          QG=${{ steps.sonar.outputs.qg_status }}
+          SONAR_URL="https://sonarcloud.io/dashboard?id=$PROJECT_KEY"
+
+          BUILD_STATUS="成功 ✅"
+          COLOR="green"
+          if [ "${{ job.status }}" != "success" ] || [ "$QG" != "OK" ]; then
+            BUILD_STATUS="失败 ❌"
+            COLOR="red"
+          fi
+
+          BUILD_TIME_ZH=$(date -d "+8 hours" "+%Y-%m-%d %H:%M:%S")
+          BUILD_TIME_JP=$(date -d "+9 hours" "+%Y-%m-%d %H:%M:%S")
+
+          curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
+            -H "Content-Type: application/json" \
+            -d "{
+                  \"msg_type\": \"interactive\",
+                  \"card\": {
+                      \"config\": {\"wide_screen_mode\": true},
+                      \"header\": {
+                        \"title\": {\"tag\": \"plain_text\", \"content\": \"构建$BUILD_STATUS | SonarCloud 报告\"},
+                        \"template\": \"$COLOR\"
+                      },
+                      \"elements\": [
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"plain_text\", \"content\": \"项目: ${{ github.repository }}\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"plain_text\", \"content\": \"分支: ${{ github.ref_name }}\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"plain_text\", \"content\": \"构建时间_ZH: $BUILD_TIME_ZH\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"plain_text\", \"content\": \"构建时间_JP: $BUILD_TIME_JP\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**Quality Gate:** $QG\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**覆盖率:** $COVERAGE%\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**漏洞:** $VULNS | **Bug:** $BUGS | **代码气味:** $SMELLS\"}},
+                        {
+                          \"tag\": \"action\",
+                          \"actions\": [
+                            {
+                              \"tag\": \"button\",
+                              \"text\": {\"tag\": \"plain_text\", \"content\": \"查看 SonarCloud 报告\"},
+                              \"type\": \"default\",
+                              \"url\": \"$SONAR_URL\"
+                            },
+                            {
+                              \"tag\": \"button\",
+                              \"text\": {\"tag\": \"plain_text\", \"content\": \"查看构建日志\"},
+                              \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+                            }
+                          ]
+                        }
+                      ]
+                  }
+                }"
