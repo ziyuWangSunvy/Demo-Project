@@ -58,7 +58,7 @@ jobs:
         run: |
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=ziyuWangSunvy_Demo-Project
-            -Dsonar.java.jdkHome=/usr/lib/jvm/jdk21/
+            -Dsonar.java.jdkHome=$JAVA_HOME
             # 获取 SonarCloud Metrics
       # 8. 获取 SonarCloud Metrics
       - name: Get SonarQube Metrics
