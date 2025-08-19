@@ -17,6 +17,7 @@
     <properties>
         <java.version>21</java.version>
         <sonar.organization>ziyuwangsunvy</sonar.organization>
+        <sonar.sources>src/main/java</sonar.sources>
     </properties>
     <dependencies>
         <dependency>
@@ -36,7 +37,6 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
