@@ -57,9 +57,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=ziyuWangSunvy_Demo-Project
+            -Dsonar.projectKey=ziyuWangSunvy_Demo-Project \
             -Dsonar.java.jdkHome=$JAVA_HOME
-            # 获取 SonarCloud Metrics
       # 8. 获取 SonarCloud Metrics
       - name: Get SonarQube Metrics
         id: sonar
