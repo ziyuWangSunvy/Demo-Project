@@ -47,7 +47,7 @@ jobs:
           name: jacoco-report
           path: target/site/jacoco
 
-      # 6. 打包项目（可选，多模块也适用）
+      # 6. 打包项目
       - name: Package project
         run: mvn -B package --file pom.xml
 
