@@ -115,14 +115,14 @@ jobs:
                         \"title\": {\"tag\": \"plain_text\", \"content\": \"构建$BUILD_STATUS | SonarCloud 报告\"},
                         \"template\": \"$COLOR\"
                       },
-                      \"elements\": [
-                        {\"tag\": \"div\", \"text\": {\"tag\": \"plain_text\", \"content\": \"项目: ${{ github.repository }}\"}},
-                        {\"tag\": \"div\", \"text\": {\"tag\": \"plain_text\", \"content\": \"分支: ${{ github.ref_name }}\"}},
-                        {\"tag\": \"div\", \"text\": {\"tag\": \"plain_text\", \"content\": \"构建时间_ZH: $BUILD_TIME_ZH\"}},
-                        {\"tag\": \"div\", \"text\": {\"tag\": \"plain_text\", \"content\": \"构建时间_JP: $BUILD_TIME_JP\"}},
-                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**Quality Gate:** $QG\"}},
-                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**覆盖率:** $COVERAGE%\"}},
-                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**漏洞:** $VULNS | **Bug:** $BUGS | **代码气味:** $SMELLS\"}},
+                     \"elements\": [
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"\\*\\*项目:\\*\\* ${{ github.repository }}\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"\\*\\*分支:\\*\\* ${{ github.ref_name }}\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"\\*\\*构建时间（中国时间）:\\*\\* $BUILD_TIME_ZH\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"\\*\\*构建时间（日本时间）:\\*\\* $BUILD_TIME_JP\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"\\*\\*Quality Gate:\\*\\* $QG\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"\\*\\*覆盖率:\\*\\* $COVERAGE%\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"\\*\\*漏洞:\\*\\* $VULNS | \\*\\*Bug:\\*\\* $BUGS | \\*\\*代码气味:\\*\\* $SMELLS\"}},
                         {
                           \"tag\": \"action\",
                           \"actions\": [
@@ -139,6 +139,6 @@ jobs:
                             }
                           ]
                         }
-                      ]
+                    ]
                   }
                 }"
