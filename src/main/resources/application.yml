@@ -3,4 +3,3 @@ spring:
     name: demo-project
 server:
   port: 8900
-
