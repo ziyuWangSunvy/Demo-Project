@@ -122,7 +122,7 @@ jobs:
                         {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**构建时间（日本时间）:** $BUILD_TIME_JP\"}},
                         {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**Quality Gate:** $QG\"}},
                         {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**覆盖率:** $COVERAGE%\"}},
-                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**漏洞:** $VULNS | **Bug:** $BUGS | **代码气味:** $SMELLS\"}},
+                        {\"tag\": \"div\", \"text\": {\"tag\": \"lark_md\", \"content\": \"**漏洞:** $VULNS | **Bug:** $BUGS | **代码异味:** $SMELLS\"}},
                         {
                           \"tag\": \"action\",
                           \"actions\": [
