@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2. 设置 JDK 21 并启用 Maven 缓存
+      # 设置 JDK 21 并启用 Maven 缓存
       - name: Setup JDK and Maven cache
         uses: actions/setup-java@v4
         with:
@@ -28,17 +28,14 @@ jobs:
           distribution: 'liberica'
           cache: maven
 
-      # 3. 缓存 SonarQube 包
+      # 缓存 SonarQube 包
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-
-
-
-      # 6. 打包项目
+      # 打包项目
       - name: Package project
         run: mvn -B package --file pom.xml
 

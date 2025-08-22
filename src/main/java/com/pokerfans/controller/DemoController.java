@@ -27,7 +27,6 @@ public class DemoController {
 
     @GetMapping("/hello2")
     public String hello2() {
-        int a = 1 / 0;
         return "hello world";
     }
 }
