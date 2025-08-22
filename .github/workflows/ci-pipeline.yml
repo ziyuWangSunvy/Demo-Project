@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 设置 JDK 21 并启用 Maven 缓存
+      # 2. 设置 JDK 21 并启用 Maven 缓存
       - name: Setup JDK and Maven cache
         uses: actions/setup-java@v4
         with:
@@ -28,14 +28,26 @@ jobs:
           distribution: 'liberica'
           cache: maven
 
-      # 缓存 SonarQube 包
+      # 3. 缓存 SonarQube 包
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      # 打包项目
+
+      # 4. 生成测试和 Jacoco 覆盖率报告
+      - name: Run tests and generate Jacoco report
+        run: mvn clean verify jacoco:report --file pom.xml
+
+      # 5. 上传 Jacoco 报告
+      - name: Upload Jacoco report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
+
+      # 6. 打包项目
       - name: Package project
         run: mvn -B package --file pom.xml
 
