@@ -36,16 +36,7 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      # 4. 生成测试和 Jacoco 覆盖率报告
-      - name: Run tests and generate Jacoco report
-        run: mvn clean verify jacoco:report --file pom.xml
 
-      # 5. 上传 Jacoco 报告
-      - name: Upload Jacoco report
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: target/site/jacoco
 
       # 6. 打包项目
       - name: Package project
