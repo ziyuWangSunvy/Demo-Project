@@ -40,11 +40,7 @@ jobs:
       - name: Run tests and generate Jacoco report
         run: mvn clean verify jacoco:report --file pom.xml
 
-      # 6. 打包项目
-      - name: Package project
-        run: mvn -B package --file pom.xml
-
-      # 7. SonarQube 分析
+      # SonarQube 分析
       - name: SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -52,7 +48,7 @@ jobs:
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=ziyuWangSunvy_Demo-Project \
             -Dsonar.java.jdkHome=$JAVA_HOME
-      # 8. 获取 SonarCloud Metrics
+      # 获取 SonarCloud Metrics
       - name: Get SonarQube Metrics
         id: sonar
         run: |
