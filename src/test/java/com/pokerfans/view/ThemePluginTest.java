@@ -6,7 +6,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class InspiniaThemeTest {
+class ThemePluginTest {
 
     @Test
     void testAddSinglePlugin() {
