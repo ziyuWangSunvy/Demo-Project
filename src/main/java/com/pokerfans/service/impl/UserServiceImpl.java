@@ -25,17 +25,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userMapper.findById(id);
+        return userMapper.selectById(id);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return userMapper.findAll();
+        return userMapper.selectList(null);
     }
 
     @Override
     public User updateUser(User user) {
-        userMapper.update(user);
+        userMapper.updateById(user);
         return user;
     }
 
