@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
 @lombok.Builder
+@lombok.EqualsAndHashCode
 public class User {
 
     @TableId

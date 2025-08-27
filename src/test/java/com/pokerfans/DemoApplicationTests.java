@@ -1,4 +1,4 @@
-package com.pokerfans.demo;
+package com.pokerfans;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

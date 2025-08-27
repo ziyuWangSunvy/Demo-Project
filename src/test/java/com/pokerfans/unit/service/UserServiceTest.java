@@ -1,4 +1,4 @@
-package com.pokerfans.service;
+package com.pokerfans.unit.service;
 
 import com.pokerfans.entity.User;
 import com.pokerfans.mapper.UserMapper;

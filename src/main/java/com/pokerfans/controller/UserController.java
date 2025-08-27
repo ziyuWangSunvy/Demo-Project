@@ -3,6 +3,8 @@ package com.pokerfans.controller;
 import com.pokerfans.entity.User;
 import com.pokerfans.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -10,16 +12,18 @@ import org.springframework.web.bind.annotation.*;
  * @version 0.1.0
  * @since 0.1.0
  */
-@RestController
-@RequestMapping("/user")
+@Controller
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public String getUserById(@PathVariable Long id, Model uiModel) {
+        User user = userService.getUserById(id);
+        uiModel.addAttribute("user", user);
+        return "index";
     }
 
     @PostMapping("/save")
