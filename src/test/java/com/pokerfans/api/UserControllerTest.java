@@ -32,6 +32,8 @@ class UserControllerTest {
     @Test
     void getUserById_success() {
         assertThat(mockMvcTester.get()
-                .uri("/user/1")).hasStatusOk();
+                .uri("/users/1").exchange())
+                .hasStatusOk()
+                .hasViewName("index");
     }
 }
